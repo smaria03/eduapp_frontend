@@ -14,3 +14,5 @@ jobs:
 
       - name: Run eslint
         uses: tj-actions/eslint-changed-files@v8.4
+        with:
+          config_path: .eslintrc.json
