@@ -9,10 +9,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install modules
+      - name: Install dependencies
         run: yarn install
 
-      - name: Run eslint
-        uses: tj-actions/eslint-changed-files@v8.4
-        with:
-          config_path: .eslintrc.json
+      - name: Run ESLint
+        run: yarn lint
