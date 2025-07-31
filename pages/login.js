@@ -29,13 +29,8 @@ const Login = () => {
 
                 const user = data.user
                 setUserData(user)
+                await router.push('/dashboard')
 
-                switch (user.role) {
-                    case 'admin': router.push('/admin/dashboard'); break
-                    case 'teacher': router.push('/teacher/dashboard'); break
-                    case 'student': router.push('/student/dashboard'); break
-                    default: router.push('/')
-                }
             } catch (err) {
                 alert('Something went wrong')
                 console.error(err)
