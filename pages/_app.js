@@ -7,7 +7,6 @@ const MyApp = ({ Component, pageProps }) => {
   const router = useRouter()
 
   useEffect(() => {
-    const isLoginPage = router.pathname === '/login'
     const isPublicPage = ['/login', '/register'].includes(router.pathname)
 
     if (!getToken() && !isPublicPage) {
