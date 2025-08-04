@@ -6,7 +6,6 @@ const Login = () => {
     const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [role, setRole] = useState('student')
 
     const onSubmit = useCallback(
         async e => {
@@ -17,7 +16,7 @@ const Login = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ email, password, role }),
+                    body: JSON.stringify({ email, password }),
                 })
 
                 const data = await response.json()
@@ -36,7 +35,7 @@ const Login = () => {
                 console.error(err)
             }
         },
-        [email, password, role, router]
+        [email, password, router]
     )
 
     return (
@@ -68,21 +67,6 @@ const Login = () => {
                             autoComplete="current-password"
                             required
                         />
-                    </div>
-
-                    <div>
-                        <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
-                        <select
-                            id="role"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                            value={role}
-                            onChange={e => setRole(e.target.value)}
-                            required
-                        >
-                            <option value="student">Student</option>
-                            <option value="teacher">Teacher</option>
-                            <option value="admin">Admin</option>
-                        </select>
                     </div>
 
                     <button
