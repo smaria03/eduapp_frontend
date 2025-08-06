@@ -25,10 +25,16 @@ const Dashboard = () => {
                     <p className="text-lg">Welcome, {getUsername()}! You have full access to administrative features:</p>
                     <Link
                         href="/create-user"
-                        className="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition"
-                    >
-                        ➕ Create Student/Teacher Account
+                        className="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
+                        Create Student/Teacher Account
                     </Link>
+                    <br></br>
+                    <Link
+                        href="/classes"
+                        className="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
+                        Manage Classes
+                    </Link>
+
                 </div>
             )}
 
