@@ -34,7 +34,12 @@ const Dashboard = () => {
                         className="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
                         Manage Classes
                     </Link>
-
+                    <br></br>
+                    <Link
+                        href="/subjects"
+                        className="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
+                        Manage Subjects
+                    </Link>
                 </div>
             )}
 
