@@ -15,7 +15,7 @@ const ClassesPage = () => {
                 return
             }
 
-            const res = await fetch('http://localhost:3000/api/admin/school_classes', {
+            const res = await fetch('http://localhost:3000/api/school_classes', {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${getToken()}`
@@ -28,7 +28,7 @@ const ClassesPage = () => {
     }, [router])
 
     const handleDelete = async id => {
-        const res = await fetch(`http://localhost:3000/api/admin/school_classes/${id}`, {
+        const res = await fetch(`http://localhost:3000/api/school_classes/${id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${getToken()}`

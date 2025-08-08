@@ -16,7 +16,7 @@ const ClassDetailsPage = () => {
 
     const fetchData = useCallback(async () => {
         const [classRes, studentsRes, subjectsRes, assignedRes] = await Promise.all([
-            fetch(`http://localhost:3000/api/admin/school_classes/${id}`, {
+            fetch(`http://localhost:3000/api/school_classes/${id}`, {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${getToken()}` }
             }),
@@ -24,7 +24,7 @@ const ClassDetailsPage = () => {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${getToken()}` }
             }),
-            fetch('http://localhost:3000/api/admin/subjects', {
+            fetch('http://localhost:3000/api/subjects', {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${getToken()}` }
             }),
@@ -50,7 +50,7 @@ const ClassDetailsPage = () => {
         setIsSaving(true)
         setSaveMessage('')
 
-        const res = await fetch(`http://localhost:3000/api/admin/school_classes/${id}`, {
+        const res = await fetch(`http://localhost:3000/api/school_classes/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ const ClassDetailsPage = () => {
     }, [id, router, fetchData])
 
     const handleRemoveStudent = async studentId => {
-        await fetch(`http://localhost:3000/api/admin/school_classes/${id}/remove_student/${studentId}`, {
+        await fetch(`http://localhost:3000/api/school_classes/${id}/remove_student/${studentId}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${getToken()}` }
         })
@@ -89,7 +89,7 @@ const ClassDetailsPage = () => {
     }
 
     const handleAddStudent = async studentId => {
-        await fetch(`http://localhost:3000/api/admin/school_classes/${id}/add_student/${studentId}`, {
+        await fetch(`http://localhost:3000/api/school_classes/${id}/add_student/${studentId}`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${getToken()}` }
         })
