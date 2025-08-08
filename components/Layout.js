@@ -1,20 +1,29 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { getUserId, getUsername, clearUserData } from '../lib/userAuth'
+import { getUserId, getUsername, getUserRole } from '../lib/userAuth'
 import { useRouter } from 'next/router'
 
 const Layout = ({ children }) => {
     const router = useRouter()
     const [username, setUsername] = useState('')
     const [userId, setUserId] = useState('')
+    const [role, setRole] = useState('')
 
     useEffect(() => {
         setUsername(getUsername())
         setUserId(getUserId())
+        setRole(getUserRole())
     }, [router])
 
     const isPublicPage = ['/login', '/register'].includes(router.pathname)
     if (isPublicPage) return <>{children}</>
+
+    const tabClass = (path) =>
+        `px-4 py-2 rounded-md transition ${
+            router.pathname === path
+                ? 'bg-indigo-700 text-white font-semibold shadow'
+                : 'bg-transparent text-white hover:bg-indigo-500'
+        }`
 
     return (
         <>
@@ -25,7 +34,20 @@ const Layout = ({ children }) => {
                 >
                     EduApp
                 </button>
-                <div className="flex items-center gap-4">
+                {role === 'admin' && (
+                    <nav className="flex gap-8">
+                        <Link href="/create-user" className={tabClass('/create-user')}>
+                            Users
+                        </Link>
+                        <Link href="/classes" className={tabClass('/classes')}>
+                            Classes
+                        </Link>
+                        <Link href="/subjects" className={tabClass('/subjects')}>
+                            Subjects
+                        </Link>
+                    </nav>
+                )}
+                <div className="flex items-center gap-3">
                     <Link href={`/profile/${userId}`} className="hover:underline">
                         {username}
                     </Link>
