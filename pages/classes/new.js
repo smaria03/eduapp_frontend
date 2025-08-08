@@ -35,7 +35,7 @@ const NewClassPage = () => {
         e.preventDefault()
         setError('')
 
-        const res = await fetch('http://localhost:3000/api/admin/school_classes', {
+        const res = await fetch('http://localhost:3000/api/school_classes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

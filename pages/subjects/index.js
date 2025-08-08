@@ -15,7 +15,7 @@ const SubjectsPage = () => {
         }
 
         const fetchSubjects = async () => {
-            const res = await fetch('http://localhost:3000/api/admin/subjects', {
+            const res = await fetch('http://localhost:3000/api/subjects', {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${getToken()}`
@@ -30,7 +30,7 @@ const SubjectsPage = () => {
 
     const handleAdd = async () => {
         if (!newSubject.trim()) return
-        const res = await fetch('http://localhost:3000/api/admin/subjects', {
+        const res = await fetch('http://localhost:3000/api/subjects', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${getToken()}`,
@@ -47,7 +47,7 @@ const SubjectsPage = () => {
     }
 
     const handleDelete = async id => {
-        const res = await fetch(`http://localhost:3000/api/admin/subjects/${id}`, {
+        const res = await fetch(`http://localhost:3000/api/subjects/${id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${getToken()}`

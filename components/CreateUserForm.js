@@ -18,7 +18,7 @@ const CreateUserForm = ({ onSuccess }) => {
         setSuccess(null)
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
