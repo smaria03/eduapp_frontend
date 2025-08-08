@@ -22,24 +22,7 @@ const Dashboard = () => {
         <div className="p-8 max-w-3xl mx-auto">
             {role === 'admin' && (
                 <div className="space-y-4">
-                    <p className="text-lg">Welcome, {getUsername()}! You have full access to administrative features:</p>
-                    <Link
-                        href="/create-user"
-                        className="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
-                        Create Student/Teacher Account
-                    </Link>
-                    <br></br>
-                    <Link
-                        href="/classes"
-                        className="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
-                        Manage Classes
-                    </Link>
-                    <br></br>
-                    <Link
-                        href="/subjects"
-                        className="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition">
-                        Manage Subjects
-                    </Link>
+                    <p className="text-lg">Welcome, {getUsername()}! You have full access to administrative features!</p>
                 </div>
             )}
 
