@@ -13,9 +13,10 @@ const ClassDetailsPage = () => {
     const [saveMessage, setSaveMessage] = useState('')
     const [allSubjects, setAllSubjects] = useState([])
     const [assignedSubjects, setAssignedSubjects] = useState([])
+    const [teachers, setTeachers] = useState([])
 
     const fetchData = useCallback(async () => {
-        const [classRes, studentsRes, subjectsRes, assignedRes] = await Promise.all([
+        const [classRes, studentsRes, subjectsRes, assignedRes, teachersRes] = await Promise.all([
             fetch(`http://localhost:3000/api/school_classes/${id}`, {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${getToken()}` }
@@ -31,19 +32,25 @@ const ClassDetailsPage = () => {
             fetch(`http://localhost:3000/api/school_classes/${id}/subjects?school_class_id=${id}`, {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${getToken()}` }
-            })
+            }),
+            fetch('http://localhost:3000/api/teachers', {
+                method: 'GET',
+                headers: { Authorization: `Bearer ${getToken()}` }
+            }),
         ])
 
         const classJson = await classRes.json()
         const studentsJson = await studentsRes.json()
         const subjectsJson = await subjectsRes.json()
         const assignedJson = await assignedRes.json()
+        const teachersJson = await teachersRes.json()
 
         setClassData(classJson)
         setAllStudents(studentsJson)
         setEditedName(classJson.name)
         setAllSubjects(subjectsJson)
         setAssignedSubjects(assignedJson)
+        setTeachers(teachersJson)
     }, [id])
 
     const handleNameSave = async () => {
@@ -108,6 +115,19 @@ const ClassDetailsPage = () => {
         await fetch(`http://localhost:3000/api/school_classes/${id}/subjects/${subjectId}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${getToken()}` }
+        })
+        fetchData()
+    }
+
+    const handleUpdateTeacher = async (assignmentId, teacherId) => {
+        if (!assignmentId || !teacherId) return
+        await fetch(`http://localhost:3000/api/school_class_subjects/${assignmentId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getToken()}`
+            },
+            body: JSON.stringify({ teacher_id: Number(teacherId) })
         })
         fetchData()
     }
@@ -192,7 +212,25 @@ const ClassDetailsPage = () => {
                             <ul className="space-y-2">
                                 {assignedSubjects.map(subject => (
                                     <li key={subject.id} className="flex justify-between items-center border p-2 rounded">
-                                        <span>{subject.name}</span>
+                                        <div className="flex items-center gap-2">
+                                            <span>{subject.name}</span>
+                                            {subject.teacher ? (
+                                                <span className="text-sm text-gray-600">Teacher: {subject.teacher.name}</span>
+                                            ) : (
+                                                <span className="text-sm text-gray-400 italic">No teacher</span>
+                                            )}
+                                            <select
+                                                className="border rounded px-2 py-1 ml-2"
+                                                value={subject.teacher?.id ?? ''}
+                                                onChange={e => handleUpdateTeacher(subject.assignment_id, e.target.value)}
+                                            >
+                                                <option value="">assign</option>
+                                                {teachers.map(t => (
+                                                    <option key={t.id} value={t.id}>{t.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
                                         <button
                                             onClick={() => handleRemoveSubject(subject.id)}
                                             className="text-red-600 hover:text-red-800">
