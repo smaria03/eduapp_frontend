@@ -5,6 +5,7 @@ import { getToken, getUserRole } from '../../lib/userAuth'
 const ClassDetailsPage = () => {
     const router = useRouter()
     const { id } = router.query
+    const PER_PAGE = 5
     const [classData, setClassData] = useState(null)
     const [allStudents, setAllStudents] = useState([])
     const [error, setError] = useState('')
@@ -14,14 +15,16 @@ const ClassDetailsPage = () => {
     const [allSubjects, setAllSubjects] = useState([])
     const [assignedSubjects, setAssignedSubjects] = useState([])
     const [teachers, setTeachers] = useState([])
+    const [studentsInClass, setStudentsInClass] = useState([])
+    const [studentsWithoutClass, setStudentsWithoutClass] = useState([])
+    const [pageInClass, setPageInClass] = useState(1)
+    const [pageNoClass, setPageNoClass] = useState(1)
+    const [qInClass, setQInClass] = useState('')
+    const [qNoClass, setQNoClass] = useState('')
 
     const fetchData = useCallback(async () => {
-        const [classRes, studentsRes, subjectsRes, assignedRes, teachersRes] = await Promise.all([
+        const [classRes, subjectsRes, assignedRes, teachersRes] = await Promise.all([
             fetch(`http://localhost:3000/api/school_classes/${id}`, {
-                method: 'GET',
-                headers: { Authorization: `Bearer ${getToken()}` }
-            }),
-            fetch('http://localhost:3000/api/students', {
                 method: 'GET',
                 headers: { Authorization: `Bearer ${getToken()}` }
             }),
@@ -40,18 +43,36 @@ const ClassDetailsPage = () => {
         ])
 
         const classJson = await classRes.json()
-        const studentsJson = await studentsRes.json()
         const subjectsJson = await subjectsRes.json()
         const assignedJson = await assignedRes.json()
         const teachersJson = await teachersRes.json()
 
         setClassData(classJson)
-        setAllStudents(studentsJson)
         setEditedName(classJson.name)
         setAllSubjects(subjectsJson)
         setAssignedSubjects(assignedJson)
         setTeachers(teachersJson)
     }, [id])
+
+    const fetchStudentsInClass = useCallback(async () => {
+        if (!id) return
+        const url = `http://localhost:3000/api/students?school_class_id=${id}&page=${pageInClass}&per_page=${PER_PAGE}${qInClass ? `&q=${encodeURIComponent(qInClass)}` : ''}`
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${getToken()}` } })
+        const json = await res.json()
+        setStudentsInClass(json)
+    }, [id, pageInClass, qInClass])
+
+    const fetchStudentsNoClass = useCallback(async () => {
+        const url = `http://localhost:3000/api/students?school_class_id=null&page=${pageNoClass}&per_page=${PER_PAGE}${qNoClass ? `&q=${encodeURIComponent(qNoClass)}` : ''}`
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${getToken()}` } })
+        const json = await res.json()
+        setStudentsWithoutClass(json)
+    }, [pageNoClass, qNoClass])
+
 
     const handleNameSave = async () => {
         setIsSaving(true)
@@ -85,7 +106,9 @@ const ClassDetailsPage = () => {
         if (!id) return
 
         fetchData()
-    }, [id, router, fetchData])
+        fetchStudentsInClass()
+        fetchStudentsNoClass()
+    }, [id, router, fetchData, fetchStudentsInClass, fetchStudentsNoClass])
 
     const handleRemoveStudent = async studentId => {
         await fetch(`http://localhost:3000/api/school_classes/${id}/remove_student/${studentId}`, {
@@ -93,6 +116,9 @@ const ClassDetailsPage = () => {
             headers: { Authorization: `Bearer ${getToken()}` }
         })
         fetchData()
+        if (studentsInClass.length === 1 && pageInClass > 1) setPageInClass(p => p - 1)
+        fetchStudentsInClass()
+        fetchStudentsNoClass()
     }
 
     const handleAddStudent = async studentId => {
@@ -101,6 +127,9 @@ const ClassDetailsPage = () => {
             headers: { Authorization: `Bearer ${getToken()}` }
         })
         fetchData()
+        if (studentsWithoutClass.length === 1 && pageNoClass > 1) setPageNoClass(p => p - 1)
+        fetchStudentsInClass()
+        fetchStudentsNoClass()
     }
 
     const handleAssignSubject = async subjectId => {
@@ -134,8 +163,6 @@ const ClassDetailsPage = () => {
 
     if (!classData) return <p className="p-8">Loading...</p>
 
-    const studentsInClass = allStudents.filter(s => s.school_class_id === classData.id)
-    const studentsWithoutClass = allStudents.filter(s => s.school_class_id === null)
     const availableSubjects = Array.isArray(allSubjects) && Array.isArray(assignedSubjects)
         ? allSubjects.filter(s => !assignedSubjects.find(a => a.id === s.id))
         : []
@@ -163,6 +190,7 @@ const ClassDetailsPage = () => {
                 <div className="flex-1 space-y-6">
                     <div>
                         <h2 className="text-xl font-semibold mb-2">Students in this class:</h2>
+                        <input value={qInClass} onChange={e=>{ setPageInClass(1); setQInClass(e.target.value) }} placeholder="Search..." className="border px-2 py-1 rounded mb-2" />
                         {studentsInClass.length === 0 ? (
                             <p className="text-gray-500 italic">No students assigned yet.</p>
                         ) : (
@@ -180,10 +208,15 @@ const ClassDetailsPage = () => {
                                 ))}
                             </ul>
                         )}
+                        <div className="flex gap-2 mt-2">
+                            <button disabled={pageInClass === 1} onClick={() => setPageInClass(p => p - 1)} className="px-2 py-1 border rounded">Prev</button>
+                            <button disabled={studentsInClass.length < PER_PAGE} onClick={() => setPageInClass(p => p + 1)} className="px-2 py-1 border rounded">Next</button>
+                        </div>
                     </div>
 
                     <div>
                         <h2 className="text-xl font-semibold mb-2">Students available to add:</h2>
+                        <input value={qNoClass} onChange={e=>{ setPageNoClass(1); setQNoClass(e.target.value) }} placeholder="Search..." className="border px-2 py-1 rounded mb-2" />
                         {studentsWithoutClass.length === 0 ? (
                             <p className="text-gray-500 italic">No available students.</p>
                         ) : (
@@ -201,6 +234,10 @@ const ClassDetailsPage = () => {
                                 ))}
                             </ul>
                         )}
+                        <div className="flex gap-2 mt-2">
+                            <button disabled={pageNoClass === 1} onClick={() => setPageNoClass(p => p - 1)} className="px-2 py-1 border rounded">Prev</button>
+                            <button disabled={studentsWithoutClass.length < PER_PAGE} onClick={() => setPageNoClass(p => p + 1)} className="px-2 py-1 border rounded">Next</button>
+                        </div>
                     </div>
                 </div>
                 <div className="flex-1 space-y-6">
