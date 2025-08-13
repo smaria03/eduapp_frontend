@@ -45,6 +45,9 @@ const Layout = ({ children }) => {
                         <Link href="/subjects" className={tabClass('/subjects')}>
                             Subjects
                         </Link>
+                        <Link href="/timetable" className={tabClass('/timetable')}>
+                            Timetable
+                        </Link>
                     </nav>
                 )}
                 <div className="flex items-center gap-3">
