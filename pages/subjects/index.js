@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getToken, getUserRole, getUserId } from '../../lib/userAuth'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const SubjectsPage = () => {
     const [subjects, setSubjects] = useState([])
@@ -125,8 +126,17 @@ const SubjectsPage = () => {
                         ) : (
                             teacherSubjects.map((item, idx) => (
                                 <li key={idx} className="border p-3 rounded bg-gray-50">
-                                    <span className="font-medium">{item.subject_name}</span> –{' '}
-                                    <span className="font-medium">{item.class_name}</span>
+                                    <Link
+                                        href={{
+                                            pathname: `/subjects/${item.assignment_id}`,
+                                            query: {
+                                                subject: item.subject_name,
+                                                class: item.class_name
+                                            }
+                                        }}>
+                                        {item.subject_name} – {item.class_name}
+                                    </Link>
+
                                 </li>
                             ))
                         )}
