@@ -50,6 +50,16 @@ const Layout = ({ children }) => {
                         </Link>
                     </nav>
                 )}
+                {role === 'teacher' && (
+                    <nav className="flex gap-8">
+                        <Link href="/subjects" className={tabClass('/subjects')}>
+                            Subjects
+                        </Link>
+                        <Link href="/schedule" className={tabClass('/schedule')}>
+                            Schedule
+                        </Link>
+                    </nav>
+                )}
                 <div className="flex items-center gap-3">
                     <Link href={`/profile/${userId}`} className="hover:underline">
                         {username}

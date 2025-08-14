@@ -27,11 +27,15 @@ const Dashboard = () => {
             )}
 
             {role === 'teacher' && (
-                <p>Welcome, {getUsername()}! Here you&#39;ll be able to view your assigned classes, schedule, and students. (TODO)</p>
+                <div className="space-y-4">
+                    <p className="text-lg">Welcome, {getUsername()}! You have full access to teacher features!</p>
+                </div>
             )}
 
             {role === 'student' && (
-                <p>Welcome, {getUsername()}! Here you&#39;ll see your grades, attendance, and assignments. (TODO)</p>
+                <div className="space-y-4">
+                    <p className="text-lg">Welcome, {getUsername()}! You have full access to student features!</p>
+                </div>
             )}
         </div>
     )
