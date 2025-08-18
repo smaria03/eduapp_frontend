@@ -131,7 +131,8 @@ const SubjectsPage = () => {
                                             pathname: `/subjects/${item.assignment_id}`,
                                             query: {
                                                 subject: item.subject_name,
-                                                class: item.class_name
+                                                className: item.class_name,
+                                                classId: item.class_id,
                                             }
                                         }}>
                                         {item.subject_name} – {item.class_name}
