@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getToken } from '../lib/userAuth'
+import { getToken, getUserRole, getUserId } from '../lib/userAuth'
 
 const API = 'http://localhost:3000/api'
 
@@ -17,25 +17,25 @@ const SchedulePage = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
 
-    const getTeacherId = () => {
-        try {
-            const token = getToken()
-            const payload = JSON.parse(atob(token.split('.')[1]))
-            return payload.sub || payload.id || payload.user_id
-        } catch {
-            return null
-        }
-    }
-
     useEffect(() => {
         const token = getToken()
-        const teacherId = getTeacherId()
-        if (!token || !teacherId) return
+        const role = getUserRole()
+        const userId = getUserId()
+        if (!token || !userId) return
 
         const headers = { Authorization: `Bearer ${token}` }
 
+        let timetableUrl = ''
+        if (role === 'teacher') {
+            timetableUrl = `${API}/timetable?teacher_id=${userId}`
+        } else if (role === 'student') {
+            timetableUrl = `${API}/timetable?student_id=${userId}`
+        } else {
+            return
+        }
+
         Promise.all([
-            fetch(`${API}/timetable?teacher_id=${teacherId}`, { headers }),
+            fetch(timetableUrl, { headers }),
             fetch(`${API}/periods`, { headers })
         ])
             .then(async ([tRes, pRes]) => {

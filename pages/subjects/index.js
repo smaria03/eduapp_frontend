@@ -7,7 +7,9 @@ const SubjectsPage = () => {
     const [subjects, setSubjects] = useState([])
     const [newSubject, setNewSubject] = useState('')
     const [teacherSubjects, setTeacherSubjects] = useState([])
+    const [studentSubjects, setStudentSubjects] = useState([])
     const [role, setRole] = useState(null)
+    const [error, setError] = useState('')
     const router = useRouter()
 
     useEffect(() => {
@@ -23,6 +25,8 @@ const SubjectsPage = () => {
             fetchAllSubjects()
         } else if (userRole === 'teacher') {
             fetchTeacherSubjects()
+        } else if (userRole === 'student') {
+            fetchStudentSubjects()
         }
     }, [router])
 
@@ -47,6 +51,34 @@ const SubjectsPage = () => {
         const data = await res.json()
         setTeacherSubjects(data)
     }
+
+    const fetchStudentSubjects = async () => {
+        const studentId = getUserId()
+
+        const userRes = await fetch(`http://localhost:3000/api/users/${studentId}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        })
+        const userData = await userRes.json()
+        const classId = userData.school_class_id
+
+        if (!classId) {
+            setError('No class assigned to your account. Please contact your teacher.')
+            return
+        }
+
+        const res = await fetch(`http://localhost:3000/api/subjects?class_id=${classId}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${getToken()}`
+            }
+        })
+        const data = await res.json()
+        setStudentSubjects(data.sort((a, b) => a.name.localeCompare(b.name)))
+    }
+
 
     const handleAdd = async () => {
         if (!newSubject.trim()) return
@@ -120,6 +152,7 @@ const SubjectsPage = () => {
             {role === 'teacher' && (
                 <>
                     <p className="text-gray-700">You are assigned to the following subjects:</p>
+                    {error && <p className="text-red-600">{error}</p>}
                     <ul className="space-y-2">
                         {teacherSubjects.length === 0 ? (
                             <li className="italic text-gray-500">No subjects assigned yet.</li>
@@ -138,6 +171,22 @@ const SubjectsPage = () => {
                                         {item.subject_name} – {item.class_name}
                                     </Link>
 
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </>
+            )}
+            {role === 'student' && (
+                <>
+                    <p className="text-gray-700">Your class is assigned to the following subjects:</p>
+                    <ul className="space-y-2">
+                        {studentSubjects.length === 0 ? (
+                            <li className="italic text-gray-500">No subjects assigned to your class yet.</li>
+                        ) : (
+                            studentSubjects.map(s => (
+                                <li key={s.id} className="border p-3 rounded">
+                                    {s.name}
                                 </li>
                             ))
                         )}
