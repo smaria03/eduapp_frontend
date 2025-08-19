@@ -16,11 +16,14 @@ const SchedulePage = () => {
     const [periods, setPeriods] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [role, setRole] = useState('')
+    const [className, setClassName] = useState('')
 
     useEffect(() => {
         const token = getToken()
         const role = getUserRole()
         const userId = getUserId()
+        setRole(role)
         if (!token || !userId) return
 
         const headers = { Authorization: `Bearer ${token}` }
@@ -43,6 +46,13 @@ const SchedulePage = () => {
                 const periods = await pRes.json()
                 setEntries(timetable)
                 setPeriods(periods)
+
+                if (role === 'student'){
+                    const first = timetable.find(e => e.class_name)
+                    if (first?.class_name) {
+                        setClassName(first.class_name)
+                    }
+                }
             })
             .catch(() => setError('Failed to load timetable'))
             .finally(() => setLoading(false))
@@ -65,7 +75,9 @@ const SchedulePage = () => {
             <div className="text-sm">
                 {items.map(item => (
                     <div key={item.id}>
-                        {item.subject_name} — {item.class_name}
+                        {role === 'student'
+                            ? `${item.subject_name} — ${item.teacher_name ?? 'Unknown'}`
+                            : `${item.subject_name} — ${item.class_name}`}
                     </div>
                 ))}
             </div>
@@ -74,7 +86,11 @@ const SchedulePage = () => {
 
     return (
         <div className="p-6 max-w-5xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">My Schedule</h1>
+            <h1 className="text-2xl font-bold mb-4">
+                My Schedule {role === 'student' && className && (
+                <span className="text-gray-600 text-lg ml-2">(Class: {className})</span>
+            )}
+            </h1>
             {loading ? (
                 <p>Loading…</p>
             ) : error ? (

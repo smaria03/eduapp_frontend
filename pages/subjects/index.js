@@ -185,7 +185,15 @@ const SubjectsPage = () => {
                             <li className="italic text-gray-500">No subjects assigned to your class yet.</li>
                         ) : (
                             studentSubjects.map(s => (
-                                <li key={s.id} className="border p-3 rounded">
+                                <li
+                                    key={s.id}
+                                    className="border p-3 rounded cursor-pointer hover:bg-gray-100"
+                                    onClick={() =>
+                                        router.push({
+                                            pathname: `/subjects/student/${s.id}`,
+                                            query: { subject: s.name }
+                                        })
+                                    }>
                                     {s.name}
                                 </li>
                             ))
