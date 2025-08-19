@@ -196,7 +196,9 @@ const TimetablePage = () => {
                                             <div className="flex flex-col gap-2">
                                                 <div className="text-sm">
                                                     <div className="font-semibold">{e.subject_name || '—'}</div>
-                                                    <div className="text-gray-600">{e.teacher_name || '—'}</div>
+                                                    <div className="text-gray-600">
+                                                        {mode === 'class' ? e.teacher_name || '—' : e.class_name || '—'}
+                                                    </div>
                                                 </div>
                                                 <div>
                                                     <button
