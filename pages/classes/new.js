@@ -17,14 +17,13 @@ const NewClassPage = () => {
         }
 
         const fetchStudents = async () => {
-            const res = await fetch('http://localhost:3000/api/students', {
+            const res = await fetch('http://localhost:3000/api/students/without_class', {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${getToken()}`
                 }
             })
-            const data = await res.json()
-            const withoutClass = data.filter(s => s.school_class_id === null)
+            const withoutClass = await res.json()
             setStudents(withoutClass)
         }
 
