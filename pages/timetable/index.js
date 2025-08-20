@@ -49,7 +49,7 @@ const TimetablePage = () => {
             }
         }
         load()
-    }, [router])
+    }, [router, classId, mode])
 
     useEffect(() => {
         const load = async () => {
