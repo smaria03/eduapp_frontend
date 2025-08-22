@@ -48,11 +48,21 @@ const ClassSubjectPage = () => {
                     <h1 className="text-2xl font-bold">{subject}</h1>
                     <h2 className="text-xl text-gray-700">Class: {className}</h2>
                 </div>
-                <button
-                    onClick={() => setShowAttendanceModal(true)}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                    Mark Attendance
-                </button>
+                <div className="flex space-x-3">
+                    <button
+                        onClick={() => router.push({
+                            pathname: `/materials/${assignmentId}`,
+                            query: { subject, className, classId }
+                        })}
+                        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                        Materials
+                    </button>
+                    <button
+                        onClick={() => setShowAttendanceModal(true)}
+                        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                        Mark Attendance
+                    </button>
+                </div>
             </div>
 
             {showAttendanceModal && (
