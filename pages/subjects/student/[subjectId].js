@@ -60,9 +60,24 @@ const SubjectGradesPage = () => {
 
     return (
         <div className="p-6 max-w-6xl mx-auto">
-            <h1 className="text-2xl font-bold mb-6">
-                {subjectName ? `Your Records for ${subjectName}` : 'Your Subject Records'}
-            </h1>
+            <div className="flex items-center justify-between mb-6">
+                <h1 className="text-2xl font-bold">
+                    {subjectName ? `Your Records for ${subjectName}` : 'Your Subject Records'}
+                </h1>
+                <button
+                    onClick={() =>
+                        router.push({
+                            pathname: '/quizzes',
+                            query: {
+                                subjectId: subjectId,
+                                subject: subjectName
+                            }
+                        })
+                    }
+                    className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                    View Quizzes
+                </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                     <h2 className="text-xl font-semibold mb-3">Grades</h2>
