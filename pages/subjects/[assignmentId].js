@@ -51,6 +51,14 @@ const ClassSubjectPage = () => {
                 <div className="flex space-x-3">
                     <button
                         onClick={() => router.push({
+                            pathname: `/homeworks/${assignmentId}`,
+                            query: { subject, className }
+                        })}
+                        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                        Homeworks
+                    </button>
+                    <button
+                        onClick={() => router.push({
                             pathname: `/quizzes/${assignmentId}`,
                             query: { subject, className }
                         })}
