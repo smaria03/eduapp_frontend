@@ -52,7 +52,7 @@ const ClassSubjectPage = () => {
                     <button
                         onClick={() => router.push({
                             pathname: `/homeworks/${assignmentId}`,
-                            query: { subject, className }
+                            query: { subject, className, classId }
                         })}
                         className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
                         Homeworks

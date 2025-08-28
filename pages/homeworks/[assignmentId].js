@@ -6,7 +6,7 @@ const API = 'http://localhost:3000/api'
 
 const HomeworksPage = () => {
     const router = useRouter()
-    const { assignmentId, subject, className } = router.query
+    const { assignmentId, subject, className, classId } = router.query
     const [homeworks, setHomeworks] = useState([])
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -25,7 +25,8 @@ const HomeworksPage = () => {
                 headers: { Authorization: `Bearer ${getToken()}` }
             })
             const data = await res.json()
-            setHomeworks(data)
+            const sorted = data.sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+            setHomeworks(sorted)
         } catch (err) {
             console.error('Failed to fetch homeworks', err)
         }
@@ -150,8 +151,12 @@ const HomeworksPage = () => {
                     homeworks.map(hw => (
                         <div
                             key={hw.id}
-                            className="p-3 border rounded shadow-sm bg-white hover:bg-gray-50 transition flex justify-between items-center"
-                        >
+                            onClick={() => router.push({
+                                pathname: `/homeworkSubmissions/${hw.id}`,
+                                query: { classId }
+                            })
+                            }
+                            className="p-3 border rounded shadow-sm bg-white hover:bg-gray-50 transition flex justify-between items-center cursor-pointer">
                             <div>
                                 <p className="font-semibold">{hw.title}</p>
                                 {hw.description && (
@@ -160,9 +165,11 @@ const HomeworksPage = () => {
                                 <p className="text-sm text-gray-500">Deadline: {hw.deadline}</p>
                             </div>
                             <button
-                                onClick={() => handleDelete(hw.id)}
-                                className="text-red-600 hover:underline text-sm"
-                            >
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDelete(hw.id)
+                                }}
+                                className="text-red-600 hover:underline text-sm">
                                 Delete
                             </button>
                         </div>
