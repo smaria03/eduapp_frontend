@@ -152,31 +152,31 @@ const MaterialsPage = () => {
                 {materials.length === 0 ? (
                     <p className="text-gray-500 italic">No materials uploaded yet.</p>
                 ) : (
-                    materials.map(material => (
-                        <a
-                            key={material.id}
-                            href={material.file_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block p-3 border rounded shadow-sm bg-white hover:bg-gray-50 transition flex justify-between items-center"
-                        >
-                            <div className="flex flex-col">
-                                <p className="font-semibold">{material.title}</p>
-                                {material.description && (
-                                    <p className="text-sm text-gray-600">{material.description}</p>
-                                )}
-                            </div>
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    handleDelete(material.id)
-                                }}
-                                className="text-red-600 hover:underline text-sm ml-4"
-                            >
-                                Delete
-                            </button>
-                        </a>
-                    ))
+                    <>
+                        {[...materials].reverse().map((material) => (
+                            <a
+                                key={material.id}
+                                href={material.file_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block p-3 border rounded shadow-sm bg-white hover:bg-gray-50 transition flex justify-between items-center">
+                                <div className="flex flex-col">
+                                    <p className="font-semibold">{material.title}</p>
+                                    {material.description && (
+                                        <p className="text-sm text-gray-600">{material.description}</p>
+                                    )}
+                                </div>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        handleDelete(material.id)
+                                    }}
+                                    className="text-red-600 hover:underline text-sm ml-4">
+                                    Delete
+                                </button>
+                            </a>
+                        ))}
+                    </>
                 )}
             </div>
         </div>
