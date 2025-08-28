@@ -60,23 +60,38 @@ const SubjectGradesPage = () => {
 
     return (
         <div className="p-6 max-w-6xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <h1 className="text-2xl font-bold">
                     {subjectName ? `Your Records for ${subjectName}` : 'Your Subject Records'}
                 </h1>
-                <button
-                    onClick={() =>
-                        router.push({
-                            pathname: '/quizzes',
-                            query: {
-                                subjectId: subjectId,
-                                subject: subjectName
-                            }
-                        })
-                    }
-                    className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-                    View Quizzes
-                </button>
+                <div className="flex gap-4">
+                    <button
+                        onClick={() =>
+                            router.push({
+                                pathname: '/quizzes',
+                                query: {
+                                    subjectId: subjectId,
+                                    subject: subjectName
+                                }
+                            })
+                        }
+                        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                        View Quizzes
+                    </button>
+                    <button
+                        onClick={() =>
+                            router.push({
+                                pathname: '/homeworks',
+                                query: {
+                                    subjectId: subjectId,
+                                    subject: subjectName
+                                }
+                            })
+                        }
+                        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                        View Homeworks
+                    </button>
+                </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
