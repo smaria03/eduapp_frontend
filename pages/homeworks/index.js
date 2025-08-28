@@ -40,9 +40,11 @@ const HomeworksPage = () => {
             }
         })
         const data = await res.json()
-        const submittedHomeworkIds = data.map(s => s.homework_id)
-        setSubmissions(submittedHomeworkIds)
+        setSubmissions(data)
     }
+
+    const getSubmissionForHomework = (homeworkId) =>
+        submissions.find(s => s.homework_id === homeworkId)
 
     const handleFileChange = (homeworkId, file) => {
         setFileMap(prev => ({ ...prev, [homeworkId]: file }))
@@ -95,7 +97,8 @@ const HomeworksPage = () => {
             ) : (
                 <div className="space-y-6">
                     {homeworks.map(hw => {
-                        const alreadySubmitted = submissions.includes(hw.id)
+                        const submission = getSubmissionForHomework(hw.id)
+                        const alreadySubmitted = !!submission
                         const deadlinePassed = isDeadlinePassed(hw.deadline)
 
                         return (
@@ -106,31 +109,38 @@ const HomeworksPage = () => {
                                     Deadline: {new Date(hw.deadline).toLocaleDateString()}
                                 </p>
 
-                                <div className="mt-3 flex flex-col md:flex-row md:items-center gap-3">
-                                    <input
-                                        type="file"
-                                        ref={el => fileInputs.current[hw.id] = el}
-                                        onChange={(e) => handleFileChange(hw.id, e.target.files[0])}
-                                        disabled={alreadySubmitted || deadlinePassed}
-                                        className="w-full md:w-auto"
-                                    />
+                                {submission && (
+                                    <p className="text-gray-700">
+                                        Grade: {submission.grade === null ? 'Not graded yet' : submission.grade}
+                                    </p>
+                                )}
 
-                                    <button
-                                        onClick={() => handleUpload(hw.id)}
-                                        disabled={uploading || alreadySubmitted || deadlinePassed}
-                                        className={`px-4 py-2 rounded text-white ${
-                                            alreadySubmitted || deadlinePassed
-                                                ? 'bg-gray-400 cursor-not-allowed'
-                                                : 'bg-green-600 hover:bg-green-700'
-                                        }`}
-                                    >
-                                        {alreadySubmitted
-                                            ? 'Already Submitted'
-                                            : deadlinePassed
-                                                ? 'Deadline Passed'
-                                                : 'Upload'}
-                                    </button>
-                                </div>
+                                {alreadySubmitted ? (
+                                    <p className="mt-3 text-gray-700 font-semibold italic">
+                                        Already submitted. You cannot upload again.
+                                    </p>
+                                ) : deadlinePassed ? (
+                                    <p className="mt-3 text-red-600 font-semibold italic">
+                                        Deadline passed. You can no longer submit this homework.
+                                    </p>
+                                ) : (
+                                    <div className="flex flex-col md:flex-row md:items-center gap-3 mt-3">
+                                        <input
+                                            type="file"
+                                            ref={el => fileInputs.current[hw.id] = el}
+                                            onChange={(e) => handleFileChange(hw.id, e.target.files[0])}
+                                            className="w-full md:w-auto"
+                                        />
+
+                                        <button
+                                            onClick={() => handleUpload(hw.id)}
+                                            disabled={uploading}
+                                            className="px-4 py-2 rounded text-white bg-green-600 hover:bg-green-700"
+                                        >
+                                            Upload
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         )
                     })}
