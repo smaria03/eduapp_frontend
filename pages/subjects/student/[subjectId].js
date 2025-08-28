@@ -91,6 +91,19 @@ const SubjectGradesPage = () => {
                         className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
                         View Homeworks
                     </button>
+                    <button
+                        onClick={() =>
+                            router.push({
+                                pathname: '/materials',
+                                query: {
+                                    subjectId: subjectId,
+                                    subject: subjectName
+                                }
+                            })
+                        }
+                        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                        View Materials
+                    </button>
                 </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
