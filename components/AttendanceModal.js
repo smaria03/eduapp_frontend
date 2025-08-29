@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getToken } from '../lib/userAuth'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import dayjs from 'dayjs'
 
 const API = 'http://localhost:3000/api'
 
@@ -135,12 +138,15 @@ const AttendanceModal = ({ onClose, assignmentId, students }) => {
                 <h2 className="text-xl font-semibold mb-4">Mark Attendance</h2>
 
                 <label className="block mb-1 font-medium">Select Date:</label>
-                <input
-                    type="date"
-                    className="border p-2 rounded w-full mb-4"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                    min={new Date().toISOString().split('T')[0]}
+                <DatePicker
+                    selected={selectedDate ? new Date(selectedDate) : null}
+                    onChange={(date) => {
+                        const formatted = dayjs(date).format('YYYY-MM-DD')
+                        handleDateChange({ target: { value: formatted } })
+                    }}
+                    maxDate={new Date()}
+                    dateFormat="yyyy-MM-dd"
+                    className="border p-3 rounded w-full mb-4 text-lg h-14"
                 />
                 {selectedDate && !isValidDate(selectedDate) && (
                     <p className="text-sm text-red-500 mt-[-12px] mb-4">No scheduled class on this date</p>
