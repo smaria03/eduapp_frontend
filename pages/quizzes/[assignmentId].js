@@ -32,7 +32,8 @@ const QuizzesPage = () => {
             headers: { Authorization: `Bearer ${getToken()}` }
         })
         const data = await res.json()
-        setQuizzes(data)
+        const sorted = data.sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+        setQuizzes(sorted)
     }
 
     const handleQuestionChange = (index, field, value) => {
