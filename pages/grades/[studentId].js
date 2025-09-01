@@ -102,7 +102,7 @@ const StudentGradesPage = () => {
                 fetchGrades(subjectId)
             } else {
                 const errData = await res.json()
-                setErrorMsg(errData.errors?.join(', ') || 'Failed to add grade')
+                setErrorMsg(errData.error || errData.errors?.join(', ') || 'Failed to add grade')
                 setSuccessMsg('')
             }
         } catch (err) {
