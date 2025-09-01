@@ -83,6 +83,36 @@ const HomeworksPage = () => {
         }
     }
 
+    const handleDeleteSubmission = async (submissionId) => {
+        const confirmed = window.confirm('Are you sure you want to delete your submission?')
+
+        if (!confirmed) return
+
+        setUploading(true)
+        setMessage('')
+
+        try {
+            const res = await fetch(`${API}/homework_submissions/${submissionId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${getToken()}`
+                }
+            })
+
+            if (!res.ok) {
+                const err = await res.json()
+                throw new Error(err.error || 'Delete failed')
+            }
+
+            setMessage('Submission deleted.')
+            await fetchSubmissions()
+        } catch (err) {
+            setMessage(err.message)
+        } finally {
+            setUploading(false)
+        }
+    }
+
     const isDeadlinePassed = (deadline) => {
         return new Date(deadline) < new Date()
     }
@@ -91,7 +121,7 @@ const HomeworksPage = () => {
         <div className="p-6 max-w-5xl mx-auto">
             <h1 className="text-2xl font-bold mb-6">Homeworks for {subject}</h1>
 
-            {message && <p className="mb-4 text-blue-600">{message}</p>}
+            {message && <p className="mb-4 text-indigo-600">{message}</p>}
 
             {homeworks.length === 0 ? (
                 <p>No homeworks found for this subject.</p>
@@ -116,15 +146,21 @@ const HomeworksPage = () => {
                                     </p>
                                 )}
 
-                                {alreadySubmitted ? (
-                                    <p className="mt-3 text-gray-700 font-semibold italic">
-                                        Already submitted. You cannot upload again.
-                                    </p>
-                                ) : deadlinePassed ? (
-                                    <p className="mt-3 text-red-600 font-semibold italic">
-                                        Deadline passed. You can no longer submit this homework.
-                                    </p>
-                                ) : (
+                                {alreadySubmitted && !deadlinePassed && (
+                                    <div className="mt-3 space-y-2">
+                                        <p className="mt-3 text-gray-700 font-semibold italic">
+                                            You already submitted. You can delete and resubmit before the deadline.
+                                        </p>
+                                        <button
+                                            onClick={() => handleDeleteSubmission(submission.id)}
+                                            className="px-4 py-2 rounded text-white bg-red-600 hover:bg-red-700"
+                                        >
+                                            Delete Submission
+                                        </button>
+                                    </div>
+                                )}
+
+                                {!alreadySubmitted && !deadlinePassed && (
                                     <div className="flex flex-col md:flex-row md:items-center gap-3 mt-3">
                                         <input
                                             type="file"
@@ -141,6 +177,12 @@ const HomeworksPage = () => {
                                             Upload
                                         </button>
                                     </div>
+                                )}
+
+                                {deadlinePassed && (
+                                    <p className="mt-3 text-red-600 font-semibold italic">
+                                        Deadline passed. You can no longer submit this homework.
+                                    </p>
                                 )}
                             </div>
                         )
