@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { getToken } from '../../lib/userAuth'
+import HomeworkCard from '../../components/HomeworkCard'
 
 const API = 'http://localhost:3000/api'
 
 const HomeworksPage = () => {
     const router = useRouter()
     const { assignmentId, subject, className, classId } = router.query
-    const [homeworks, setHomeworks] = useState([])
+    const [homeworks, setHomeworks] = useState({ upcoming: [], expired: [] })
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [deadline, setDeadline] = useState('')
@@ -25,8 +26,17 @@ const HomeworksPage = () => {
                 headers: { Authorization: `Bearer ${getToken()}` }
             })
             const data = await res.json()
-            const sorted = data.sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
-            setHomeworks(sorted)
+            const now = new Date()
+
+            const upcoming = data
+                .filter(hw => new Date(hw.deadline) >= now)
+                .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+
+            const expired = data
+                .filter(hw => new Date(hw.deadline) < now)
+                .sort((a, b) => new Date(b.deadline) - new Date(a.deadline))
+
+            setHomeworks({ upcoming, expired })
         } catch (err) {
             console.error('Failed to fetch homeworks', err)
         }
@@ -129,6 +139,7 @@ const HomeworksPage = () => {
                         value={deadline}
                         onChange={e => setDeadline(e.target.value)}
                         required
+                        min={new Date().toISOString().split('T')[0]}
                         className="w-full border border-gray-300 rounded px-3 py-2"
                     />
                 </div>
@@ -144,37 +155,27 @@ const HomeworksPage = () => {
                 {errorMsg && <p className="text-red-600 mt-2">{errorMsg}</p>}
             </form>
 
-            <div className="space-y-3">
-                {homeworks.length === 0 ? (
-                    <p className="text-gray-500 italic">No homeworks created yet.</p>
-                ) : (
-                    homeworks.map(hw => (
-                        <div
-                            key={hw.id}
-                            onClick={() => router.push({
-                                pathname: `/homeworkSubmissions/${hw.id}`,
-                                query: { classId }
-                            })
-                            }
-                            className="p-3 border rounded shadow-sm bg-white hover:bg-gray-50 transition flex justify-between items-center cursor-pointer">
-                            <div>
-                                <p className="font-semibold">{hw.title}</p>
-                                {hw.description && (
-                                    <p className="text-sm text-gray-600">{hw.description}</p>
-                                )}
-                                <p className="text-sm text-gray-500">Deadline: {hw.deadline}</p>
-                            </div>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleDelete(hw.id)
-                                }}
-                                className="text-red-600 hover:underline text-sm">
-                                Delete
-                            </button>
-                        </div>
-                    ))
-                )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 className="text-xl font-semibold mb-2">Upcoming Homeworks</h3>
+                    {homeworks.upcoming.length === 0 ? (
+                        <p className="text-gray-500 italic">No upcoming homeworks.</p>
+                    ) : (
+                        homeworks.upcoming.map(hw => (
+                            <HomeworkCard key={hw.id} hw={hw} classId={classId} onDelete={handleDelete} />
+                        ))
+                    )}
+                </div>
+                <div>
+                    <h3 className="text-xl font-semibold mb-2">Past Deadlines</h3>
+                    {homeworks.expired.length === 0 ? (
+                        <p className="text-gray-500 italic">No past homeworks.</p>
+                    ) : (
+                        homeworks.expired.map(hw => (
+                            <HomeworkCard key={hw.id} hw={hw} classId={classId} onDelete={handleDelete} />
+                        ))
+                    )}
+                </div>
             </div>
         </div>
     )
