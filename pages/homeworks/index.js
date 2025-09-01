@@ -29,7 +29,8 @@ const HomeworksPage = () => {
             }
         })
         const data = await res.json()
-        setHomeworks(data)
+        const sorted = data.sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+        setHomeworks(sorted)
     }
 
     const fetchSubmissions = async () => {
