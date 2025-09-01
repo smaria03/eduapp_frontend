@@ -35,7 +35,7 @@ const QuizzesPage = () => {
                     submissionsRes.json()
                 ])
 
-                setQuizzes(quizzesData)
+                setQuizzes(quizzesData.sort((a, b) => new Date(a.deadline) - new Date(b.deadline)))
                 setSubmissions(submissionsData)
             } catch (err) {
                 console.error(err)
