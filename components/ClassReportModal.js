@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import {
     PieChart,
     Pie,
@@ -7,11 +7,27 @@ import {
     ResponsiveContainer,
     Legend
 } from 'recharts'
+import { generatePDF } from '../lib/pdfExport'
+import { generateExcel } from '../lib/excelExport'
+
 
 const COLORS = ['#f87171', '#34d399']
 
 const ClassReportModal = ({ report, onClose }) => {
     const [openSubjects, setOpenSubjects] = useState({})
+    const [selectedSubjects, setSelectedSubjects] = useState({})
+    const [exportMenuOpen, setExportMenuOpen] = useState(false)
+    const [exportFormat, setExportFormat] = useState('pdf')
+
+    useEffect(() => {
+        if (report?.subjects) {
+            const initial = {}
+            report.subjects.forEach((_, idx) => {
+                initial[idx] = true
+            })
+            setSelectedSubjects(initial)
+        }
+    }, [report])
 
     if (!report) return null
 
@@ -39,6 +55,23 @@ const ClassReportModal = ({ report, onClose }) => {
         ]
     }
 
+    const handleExport = () => {
+        const filteredSubjects = report.subjects.filter((_, idx) => selectedSubjects[idx])
+
+        const filteredReport = {
+            ...report,
+            subjects: filteredSubjects
+        }
+
+        if (exportFormat === 'pdf') {
+            generatePDF(filteredReport)
+        } else if (exportFormat === 'excel') {
+            generateExcel(filteredReport)
+        }
+
+        setExportMenuOpen(false)
+    }
+
     return (
         <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg max-h-[90vh] w-[90vw] overflow-y-auto shadow-xl relative">
@@ -50,7 +83,65 @@ const ClassReportModal = ({ report, onClose }) => {
                 </button>
 
                 <h2 className="text-2xl font-bold mb-2">Class Report: {report.class_name}</h2>
+                <button
+                    onClick={() => setExportMenuOpen(!exportMenuOpen)}
+                    className="mb-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                    Generate Report
+                </button>
                 <p className="mb-4 text-gray-600">Students enrolled: {report.students_count}</p>
+
+                {exportMenuOpen && (
+                    <div className="mb-6 p-4 bg-gray-100 border rounded shadow w-full max-w-md">
+                        <p className="font-semibold mb-2">Select Subjects</p>
+                        <div className="space-y-2 mb-4">
+                            {report.subjects.map((subject, idx) => (
+                                <div key={idx} className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedSubjects[idx]}
+                                        onChange={() =>
+                                            setSelectedSubjects((prev) => ({
+                                                ...prev,
+                                                [idx]: !prev[idx]
+                                            }))
+                                        }
+                                    />
+                                    <span>{subject.subject}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <p className="font-semibold mb-2">Select Format</p>
+                        <div className="flex space-x-4 mb-4">
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    name="format"
+                                    value="pdf"
+                                    checked={exportFormat === 'pdf'}
+                                    onChange={() => setExportFormat('pdf')}
+                                />
+                                <span>PDF</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    name="format"
+                                    value="excel"
+                                    checked={exportFormat === 'excel'}
+                                    onChange={() => setExportFormat('excel')}
+                                />
+                                <span>Excel</span>
+                            </label>
+                        </div>
+
+                        <button
+                            onClick={handleExport}
+                            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+                            Export
+                        </button>
+                    </div>
+                )}
 
                 {report.subjects.map((subject, index) => (
                     <div key={index} className="mb-6 border rounded-lg shadow-sm">
