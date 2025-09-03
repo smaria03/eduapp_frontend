@@ -177,11 +177,15 @@ const TimetablePage = () => {
             {loading && <div>Loading…</div>}
 
             <div className="overflow-x-auto">
-                <table className="min-w-full border">
+                <table className="w-full table-fixed border text-sm">
                     <thead>
                     <tr className="bg-gray-50">
-                        <th className="p-2 border">Period / Day</th>
-                        {WEEKDAYS.map(d => <th key={d.value} className="p-2 border text-center">{d.label}</th>)}
+                        <th className="p-2 border w-[110px]">Period / Day</th>
+                        {WEEKDAYS.map(d => (
+                            <th key={d.value} className="p-2 border text-center w-[150px]">
+                                {d.label}
+                            </th>
+                        ))}
                     </tr>
                     </thead>
                     <tbody>
@@ -217,7 +221,7 @@ const TimetablePage = () => {
                                                     <div className="text-xs text-gray-500">No subjects with an assigned teacher.</div>
                                                 ) : (
                                                     <select
-                                                        className="text-sm border rounded p-1"
+                                                        className="text-sm border rounded p-2 w-full whitespace-normal leading-tight"
                                                         defaultValue=""
                                                         onChange={(ev) => {
                                                             const assignment_id = Number(ev.target.value)

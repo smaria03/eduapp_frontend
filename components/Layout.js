@@ -48,6 +48,9 @@ const Layout = ({ children }) => {
                         <Link href="/timetable" className={tabClass('/timetable')}>
                             Timetable
                         </Link>
+                        <Link href="/archives" className={tabClass('/archives')}>
+                            Archives
+                        </Link>
                     </nav>
                 )}
                 {role === 'teacher' && (
