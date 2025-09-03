@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { getToken } from '../../lib/userAuth'
+import {getToken, getUserRole} from '../../lib/userAuth'
 import QuizModal from '../../components/QuizModal'
 
 const QuizzesPage = () => {
@@ -16,6 +16,11 @@ const QuizzesPage = () => {
 
     useEffect(() => {
         if (!subjectId) return
+
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
 
         const fetchData = async () => {
             try {

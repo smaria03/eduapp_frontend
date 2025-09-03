@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getToken, getUserRole, getUserId } from '../lib/userAuth'
+import { useRouter } from 'next/router'
 
 const API = 'http://localhost:3000/api'
 
@@ -18,6 +19,7 @@ const SchedulePage = () => {
     const [error, setError] = useState('')
     const [role, setRole] = useState('')
     const [className, setClassName] = useState('')
+    const router = useRouter()
 
     useEffect(() => {
         const token = getToken()
@@ -25,6 +27,11 @@ const SchedulePage = () => {
         const userId = getUserId()
         setRole(role)
         if (!token || !userId) return
+
+        if (role !== 'teacher' && role !== 'student') {
+            router.replace('/404')
+            return
+        }
 
         const headers = { Authorization: `Bearer ${token}` }
 

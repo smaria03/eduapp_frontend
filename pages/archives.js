@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
-import { getToken } from '../lib/userAuth'
+import {getToken, getUserRole} from '../lib/userAuth'
+import {useRouter} from "next/router";
 
 const API = 'http://localhost:3000/api'
 
 const ArchivesPage = () => {
+    const router = useRouter()
     const [graduationLabel, setGraduationLabel] = useState('')
     const [graduationMessage, setGraduationMessage] = useState('')
     const [archiveLabels, setArchiveLabels] = useState([])
@@ -13,6 +15,11 @@ const ArchivesPage = () => {
     const [archiveDetails, setArchiveDetails] = useState(null)
 
     useEffect(() => {
+        if (getUserRole() !== 'admin') {
+            router.replace('/404')
+            return
+        }
+
         const fetchLabels = async () => {
             try {
                 const res = await fetch(`${API}/school_class_archives/labels`, {

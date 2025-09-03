@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { getToken } from '../../lib/userAuth'
+import {getToken, getUserRole} from '../../lib/userAuth'
 
 const API = 'http://localhost:3000/api'
 
@@ -23,6 +23,11 @@ const QuizzesPage = () => {
     const [errorMsg, setErrorMsg] = useState('')
 
     useEffect(() => {
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
+
         if (assignmentId) fetchQuizzes()
     }, [assignmentId])
 

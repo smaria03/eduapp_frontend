@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { getToken } from '../../lib/userAuth'
+import {getToken, getUserRole} from '../../lib/userAuth'
 import { useRef } from 'react'
 
 const API = 'http://localhost:3000/api'
@@ -17,6 +17,11 @@ const MaterialsPage = () => {
     const fileInputRef = useRef()
 
     useEffect(() => {
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
+
         if (assignmentId) fetchMaterials()
     }, [assignmentId])
 

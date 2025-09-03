@@ -8,7 +8,8 @@ const CreateUserPage = () => {
 
     useEffect(() => {
         if (getUserRole() !== 'admin') {
-            router.push('/unauthorized')
+            router.replace('/404')
+            return
         }
     }, [router])
 

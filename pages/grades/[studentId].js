@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { getToken } from '../../lib/userAuth'
+import {getToken, getUserRole} from '../../lib/userAuth'
 
 const API = 'http://localhost:3000/api'
 
@@ -62,6 +62,11 @@ const StudentGradesPage = () => {
 
     useEffect(() => {
         if (!router.isReady || !studentId || !subject) return
+
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
 
         const initialize = async () => {
             await fetchStudentName()

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { getToken } from '../../../lib/userAuth'
+import {getToken, getUserRole} from '../../../lib/userAuth'
 
 const SubjectGradesPage = () => {
     const router = useRouter()
@@ -12,6 +12,11 @@ const SubjectGradesPage = () => {
 
     useEffect(() => {
         if (!subjectId) return
+
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
 
         const fetchGrades = async () => {
             try {
