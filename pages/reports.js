@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react'
-import { getToken, getUserId } from '../lib/userAuth'
+import { getToken, getUserId, getUserRole } from '../lib/userAuth'
 import ClassReportModal from '../components/ClassReportModal'
+import {useRouter} from "next/router";
 
 const API = 'http://localhost:3000/api'
 
 const ReportsPage = () => {
+    const router = useRouter()
     const [classes, setClasses] = useState([])
     const [error, setError] = useState('')
     const [selectedReport, setSelectedReport] = useState(null)
     const [loadingReport, setLoadingReport] = useState(false)
 
     useEffect(() => {
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
+
         const fetchAssignedClasses = async () => {
             const teacherId = getUserId()
             try {

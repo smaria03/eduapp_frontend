@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getToken } from '../lib/userAuth'
+import {getToken, getUserRole} from '../lib/userAuth'
 import {
     PieChart,
     Pie,
@@ -10,11 +10,13 @@ import {
 } from 'recharts'
 import { generateStudentPDF } from '../lib/pdfExportStudent'
 import { generateStudentExcel } from '../lib/excelExportStudent'
+import {useRouter} from "next/router";
 
 const API = 'http://localhost:3000/api'
 const COLORS = ['#f87171', '#34d399']
 
 const StudentReportPage = () => {
+    const router = useRouter()
     const [report, setReport] = useState(null)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(true)
@@ -23,6 +25,11 @@ const StudentReportPage = () => {
     const [exportFormat, setExportFormat] = useState('pdf')
 
     useEffect(() => {
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
+
         const fetchReport = async () => {
             try {
                 const res = await fetch(`${API}/student_reports`, {

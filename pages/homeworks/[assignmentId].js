@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { getToken } from '../../lib/userAuth'
+import {getToken, getUserRole} from '../../lib/userAuth'
 import HomeworkCard from '../../components/HomeworkCard'
 
 const API = 'http://localhost:3000/api'
@@ -16,6 +16,11 @@ const HomeworksPage = () => {
     const [errorMsg, setErrorMsg] = useState('')
 
     useEffect(() => {
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
+
         if (assignmentId) fetchHomeworks()
     }, [assignmentId])
 

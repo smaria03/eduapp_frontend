@@ -28,7 +28,8 @@ const TimetablePage = () => {
 
     useEffect(() => {
         const role = getUserRole()
-        if (role !== 'admin') { router.push('/login'); return }
+        if (role !== 'admin') { router.replace('/404'); return }
+
 
         const load = async () => {
             try {

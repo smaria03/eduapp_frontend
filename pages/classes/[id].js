@@ -99,7 +99,7 @@ const ClassDetailsPage = () => {
     useEffect(() => {
         const role = getUserRole()
         if (role !== 'admin') {
-            router.push('/login')
+            router.replace('/404')
             return
         }
 

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { getToken } from '../../lib/userAuth'
+import {getToken, getUserRole} from '../../lib/userAuth'
 
 const MaterialsPage = () => {
     const router = useRouter()
@@ -10,6 +10,11 @@ const MaterialsPage = () => {
     const [error, setError] = useState('')
 
     useEffect(() => {
+        if (getUserRole() !== 'teacher') {
+            router.replace('/404')
+            return
+        }
+
         if (!subjectId) return
 
         const fetchMaterials = async () => {
