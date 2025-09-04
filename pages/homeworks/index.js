@@ -15,7 +15,7 @@ const HomeworksPage = () => {
     const [message, setMessage] = useState('')
 
     useEffect(() => {
-        if (getUserRole() !== 'teacher') {
+        if (getUserRole() !== 'student') {
             router.replace('/404')
             return
         }

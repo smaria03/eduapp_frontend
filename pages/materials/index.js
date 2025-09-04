@@ -10,7 +10,7 @@ const MaterialsPage = () => {
     const [error, setError] = useState('')
 
     useEffect(() => {
-        if (getUserRole() !== 'teacher') {
+        if (getUserRole() !== 'student') {
             router.replace('/404')
             return
         }
