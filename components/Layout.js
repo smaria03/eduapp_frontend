@@ -77,6 +77,9 @@ const Layout = ({ children }) => {
                         <Link href="/personal-reports" className={tabClass('/personal-reports')}>
                             Reports
                         </Link>
+                        <Link href="/student-archives" className={tabClass('/student-archives')}>
+                            Archives
+                        </Link>
                     </nav>
                 )}
                 <div className="flex items-center gap-3">

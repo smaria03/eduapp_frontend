@@ -25,7 +25,7 @@ const StudentReportPage = () => {
     const [exportFormat, setExportFormat] = useState('pdf')
 
     useEffect(() => {
-        if (getUserRole() !== 'teacher') {
+        if (getUserRole() !== 'student') {
             router.replace('/404')
             return
         }
