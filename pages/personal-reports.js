@@ -97,7 +97,7 @@ const StudentReportPage = () => {
 
     return (
         <div className="p-6 max-w-5xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">My Personal Report</h1>
+            <h1 className="text-2xl font-bold mb-4">My Profile</h1>
             <button
                 onClick={() => setExportMenuOpen(!exportMenuOpen)}
                 className="mb-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
