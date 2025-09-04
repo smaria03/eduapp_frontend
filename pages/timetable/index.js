@@ -105,6 +105,7 @@ const TimetablePage = () => {
     }
 
     const handleAdd = async ({ assignment_id, weekday, period_id }) => {
+        setErr('');
         const res = await fetch(`${API}/timetable`, {
             method: 'POST',
             headers: {
@@ -136,6 +137,8 @@ const TimetablePage = () => {
 
     const gridMap = {}
     for (const e of entries) gridMap[`${e.weekday}-${e.period_id}`] = e
+
+    useEffect(() => { setErr(''); }, [mode, classId, teacherId]);
 
     return (
         <div className="p-8 max-w-6xl mx-auto space-y-4">

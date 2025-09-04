@@ -75,7 +75,7 @@ const Layout = ({ children }) => {
                             Schedule
                         </Link>
                         <Link href="/personal-reports" className={tabClass('/personal-reports')}>
-                            Reports
+                            Profile
                         </Link>
                         <Link href="/student-archives" className={tabClass('/student-archives')}>
                             Archives
