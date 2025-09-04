@@ -100,7 +100,7 @@ const QuizzesPage = () => {
             }
         }
 
-        const totalPoints = questions.reduce((sum, q) => sum + parseInt(q.point_value || 0), 0)
+        const totalPoints = questions.reduce((sum, q) => sum + parseFloat(q.point_value || 0), 0)
         if (totalPoints !== 9) {
             setErrorMsg(`Total points must be exactly 9 (you get 1 point automatically). Current total: ${totalPoints}`)
             setSuccessMsg('')
@@ -116,7 +116,7 @@ const QuizzesPage = () => {
                 assignment_id: parseInt(assignmentId),
                 questions: questions.map(q => ({
                     question_text: q.question_text,
-                    point_value: parseInt(q.point_value),
+                    point_value: parseFloat(q.point_value),
                     options: q.options.map(o => ({
                         text: o.text,
                         is_correct: o.is_correct
@@ -256,8 +256,8 @@ const QuizzesPage = () => {
                         <input
                             type="number"
                             placeholder="Points"
-                            min="1"
-                            value={q.point_value}
+                            min="0"
+                            step="0.05"
                             onChange={(e) => handleQuestionChange(qIndex, 'point_value', e.target.value)}
                             className="w-full border px-2 py-1 rounded mb-4"
                             required
